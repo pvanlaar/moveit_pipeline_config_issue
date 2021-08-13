@@ -1,0 +1,21 @@
+<launch>
+    <!-- Specify the config files to use -->
+    <rosparam ns="move_group" command="load" file="$(find bug_pipeline_config)/config/bug_chomp_pipeline.yaml" />
+
+    <!-- robot description & planning pipeline -->
+    <include file="$(find panda_moveit_config)/launch/planning_context.launch">
+       <arg name="load_robot_description" value="true" />
+    </include>
+
+
+    <!-- (Fake) Trajectory Execution required by MoveGroupInterface -->
+    <include ns="move_group" file="$(find panda_moveit_config)/launch/trajectory_execution.launch.xml">
+      <arg name="moveit_manage_controllers" value="true" />
+      <arg name="moveit_controller_manager" value="fake" />
+    </include>
+
+    <node name="move_group" pkg="moveit_ros_move_group" type="move_group" respawn="false">
+        <param name="allow_trajectory_execution" value="false" />
+        <param name="default_planning_pipeline" value="ompl" />
+    </node>
+</launch>
